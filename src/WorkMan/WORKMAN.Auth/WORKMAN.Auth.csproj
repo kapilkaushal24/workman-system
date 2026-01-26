@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Infrastructure\Events\**" />
+    <Content Remove="Infrastructure\Events\**" />
+    <EmbeddedResource Remove="Infrastructure\Events\**" />
+    <None Remove="Infrastructure\Events\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.23" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.23" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.23">
@@ -26,6 +33,13 @@
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlock.Common\BuildingBlocks.Common.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.Common.Contracts\BuildingBlocks.Common.Contracts.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.ExceptionHandling\BuildingBlocks.ExceptionHandling.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Feature\Permissions\" />
+    <Folder Include="Feature\Roles\GetRoles\" />
+    <Folder Include="Feature\Roles\AssignRoleToUser\" />
+    <Folder Include="Feature\Roles\UpdateRolePermissions\" />
   </ItemGroup>
 
 </Project>

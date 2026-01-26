@@ -436,6 +436,11 @@ namespace WORKMAN.Config.Migrations
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsCreatedBySystem")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<int>("IsDeleted")
                         .HasColumnType("integer");
 

@@ -1,6 +1,4 @@
-﻿using BuildingBlocks.Common.Base;
-
-namespace WORKMAN.Config.Entites.MenuEntityConfig
+﻿namespace WORKMAN.Config.Entites.MenuEntityConfig
 {
     public class MenuConfig: BaseEntity
     {
@@ -17,7 +15,7 @@ namespace WORKMAN.Config.Entites.MenuEntityConfig
         public string MenuDiscription { get; set; } = string.Empty;
         public int StatusId{ get; set; }
         public int DisplayOrder{ get; set; }
-     
-        
+        public bool IsCreatedBySystem { get; set; }
+
     }
 }

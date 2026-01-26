@@ -18,7 +18,14 @@ namespace WORKMAN.Auth.Feature.Auth.Register
         public async Task<RegisterResponse> HandleAsync(RegisterRequest request, CancellationToken cancellationToken)
         {
             var email = NormalizeEmail(request.Email);
-            
+
+            var existingUser = await _authDb.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+
+            if (existingUser != null)
+                throw new Exception("Email already registered.");
+
             var passwordHash = _hasher.Hash(request.Password);
 
             var user = new User(email, passwordHash);

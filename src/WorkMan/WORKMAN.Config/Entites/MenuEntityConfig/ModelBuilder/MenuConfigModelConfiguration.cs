@@ -1,7 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-
 namespace WORKMAN.Config.Entites.MenuEntityConfig.ModelBuilder
 {
     public class MenuConfigModelConfiguration : IEntityTypeConfiguration<MenuConfig>
@@ -54,7 +50,9 @@ namespace WORKMAN.Config.Entites.MenuEntityConfig.ModelBuilder
 
             builder.Property(x => x.DisplayOrder)
                 .IsRequired();
-            
+            builder.Property(x => x.IsCreatedBySystem)
+                .IsRequired()
+                .HasDefaultValue(false);
         }
     }
 }
