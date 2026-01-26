@@ -9,14 +9,15 @@
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
-                .ValueGeneratedOnAdd(); // BIGSERIAL for PostgreSQL, INTEGER AUTOINCREMENT for SQLite
+                .UseIdentityByDefaultColumn()
+                .ValueGeneratedOnAdd();
 
             builder.Property(x => x.Email)
                 .IsRequired()
                 .HasMaxLength(256);
 
             builder.HasIndex(x => x.Email)
-                .IsUnique(); // 🔥 Critical for concurrency safety
+                .IsUnique(); 
 
             builder.Property(x => x.PasswordHash)
                 .IsRequired();

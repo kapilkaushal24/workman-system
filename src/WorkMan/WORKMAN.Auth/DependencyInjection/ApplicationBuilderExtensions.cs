@@ -12,6 +12,9 @@ namespace WORKMAN.Auth.DependencyInjection
                 var dbContext = scope.ServiceProvider
                     .GetRequiredService<AuthDbContext>();
 
+                // Drops database completely if it exists
+                dbContext.Database.EnsureDeleted();
+
                 dbContext.Database.Migrate();
             }
 

@@ -1,7 +1,12 @@
-﻿namespace WORKMAN.Auth.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WORKMAN.Auth.Entities
 {
     public sealed class User
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; private set; }
 
         public string Email { get; private set; } = default!;
