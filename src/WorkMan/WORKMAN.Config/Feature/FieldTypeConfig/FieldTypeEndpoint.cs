@@ -5,12 +5,12 @@
     public class FieldTypeEndpoint : ControllerBase
     {
         private readonly FieldTypeHandler _handler;
-        
+
         public FieldTypeEndpoint(FieldTypeHandler handler)
         {
             _handler = handler;
         }
-        
+
         [HttpPost("fieldtype")]
         public async Task<ActionResult> AddUpdateFieldType([FromBody] FieldTypeVM request, CancellationToken cancellationToken)
         {

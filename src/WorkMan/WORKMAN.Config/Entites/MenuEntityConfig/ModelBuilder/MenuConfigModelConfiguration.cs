@@ -50,7 +50,9 @@ namespace WORKMAN.Config.Entites.MenuEntityConfig.ModelBuilder
 
             builder.Property(x => x.DisplayOrder)
                 .IsRequired();
-            
+            builder.Property(x => x.IsCreatedBySystem)
+                .IsRequired()
+                .HasDefaultValue(false);
         }
     }
 }
