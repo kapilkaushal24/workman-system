@@ -1,9 +1,11 @@
-﻿using WORKMAN.Auth.Feature.Auth.Logout;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Threading.RateLimiting;
+using BuildingBlocks.Common.DependencyInjection;
+using Microsoft.OpenApi.Models;
+
 
 namespace WORKMAN.Auth.DependencyInjection
 {
@@ -15,7 +17,41 @@ namespace WORKMAN.Auth.DependencyInjection
             services.AddControllers();
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v2", new OpenApiInfo
+                {
+                    Version = "v2",
+                    Title = "WORKMAN Auth API",
+                    Description = "Authentication and User Management API"
+                });
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below. Example: 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+
+                // Add the security requirement globally
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
 
             services.AddCors(options =>
             {
@@ -27,28 +63,22 @@ namespace WORKMAN.Auth.DependencyInjection
                 });
             });
 
+            // PostgreSQL Database
             services.AddDbContext<AuthDbContext>(options =>
-            {
-                var connectionString = configuration.GetConnectionString("AuthDatabase");
-                
-                // Detect database provider based on connection string
-                if (connectionString!.Contains("Data Source=") && connectionString.EndsWith(".db"))
-                {
-                    // SQLite for local development
-                    options.UseSqlite(connectionString);
-                }
-                else
-                {
-                    // PostgreSQL for production
-                    options.UseNpgsql(connectionString);
-                }
-            });
+                options.UseNpgsql(configuration.GetConnectionString("AuthDatabase")));
 
             // Feature handlers
             services.AddScoped<RegisterHandler>();
             services.AddScoped<LoginHandler>();
             services.AddScoped<RefreshTokenHandler>();
             services.AddScoped<LogoutHandler>();
+
+            // User Profile handlers
+            services.AddScoped<GetUserHandler>();
+            services.AddScoped<GetUsersHandler>();
+            services.AddScoped<UpdateUserHandler>();
+            services.AddScoped<DeleteUserHandler>();
+            services.AddScoped<SearchUserHandler>();
 
             // Security
             services.AddSingleton<PasswordHasher>();
@@ -69,8 +99,8 @@ namespace WORKMAN.Auth.DependencyInjection
             {
                 options.AddFixedWindowLimiter("login-policy", opt =>
                 {
-                    opt.Window = TimeSpan.FromMinutes(15);
-                    opt.PermitLimit = 5;
+                    opt.Window = TimeSpan.FromSeconds(10);
+                    opt.PermitLimit = 10;
                     opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                     opt.QueueLimit = 0;
                 });
@@ -78,6 +108,9 @@ namespace WORKMAN.Auth.DependencyInjection
                 // Custom response when limited
                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             });
+
+            //Add Event Infrastructure (RabbitMQ)
+            services.AddRabbitMqEventPublisher();
 
             return services;
         }
